@@ -1,5 +1,5 @@
 /*
- * This file is part of Chorus32-ESP32LapTimer 
+ * This file is part of Chorus32-ESP32LapTimer
  * (see https://github.com/AlessandroAU/Chorus32-ESP32LapTimer).
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 #include "OLED.h"
 
 #include <Wire.h>
-#include "SSD1306.h"
 #include "Font.h"
 #include "Timer.h"
 #include "Screensaver.h"
@@ -28,6 +27,11 @@
 #include "Calibration.h"
 #include "TimerWebServer.h"
 #include "Utils.h"
+#if defined(SSD1306_OLED)
+#include "SSD1306.h"
+#elif defined(SH1106_OLED)
+#include "SH1106.h"
+#endif
 
 static uint8_t oledRefreshTime = 50;
 static uint32_t last_input_ms = 0;
@@ -35,7 +39,11 @@ static bool display_standby_status = false;
 
 static Timer oledTimer = Timer(oledRefreshTime);
 
-static SSD1306 display(0x3c, 21, 22);  // 21 and 22 are default pins
+#if defined(SSD1306_OLED)
+static SSD1306 display(0x3c, 21, 22);
+#elif defined(SH1106_OLED)
+static SH1106 display(0x3c, 21, 22);  // 21 and 22 are default pins
+#endif
 
 typedef struct oled_page_s {
   void* data;
@@ -73,7 +81,7 @@ void oledSetup(void) {
   display.drawFastImage(0, 0, 128, 64, ChorusLaptimerLogo_Screensaver);
   display.display();
   display.setFont(Dialog_plain_9);
-  
+
   for(uint8_t i = 0; i < NUM_OLED_PAGES; ++i) {
     if(oled_pages[i].init) {
       oled_pages[i].init(oled_pages[i].data);
@@ -198,7 +206,7 @@ void summary_page_update(void* data) {
   if (getADCVBATmode() == INA219) {
     display.drawString(90, 0, String(getMaFloat()/1000, 2) + "A");
   }
-  
+
   // Rx modules
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   #define RSSI_BAR_LENGTH (127 - 42)
@@ -232,7 +240,7 @@ void calib_page_update(void* data) {
 void calib_page_input(void* data, uint8_t index, uint8_t type) {
   (void)data;
   if(index == 1 && type == BUTTON_SHORT) {
-    rssiCalibration();  
+    rssiCalibration();
   }
   else {
     next_page_input(data, index, type);

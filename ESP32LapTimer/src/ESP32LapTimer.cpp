@@ -1,5 +1,5 @@
 /*
- * This file is part of Chorus32-ESP32LapTimer 
+ * This file is part of Chorus32-ESP32LapTimer
  * (see https://github.com/AlessandroAU/Chorus32-ESP32LapTimer).
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
 #include "RX5808.h"
 #include "Bluetooth.h"
 #include "settings_eeprom.h"
-#ifdef OLED
+#if defined(SSD1306_OLED) || defined(SH1106_OLED)
 #include "OLED.h"
 #endif
 #include "TimerWebServer.h"
@@ -81,7 +81,7 @@ void setup() {
     return;
   }
 #endif
-#ifdef OLED
+#if defined(SSD1306_OLED) || defined(SH1106_OLED)
   oledSetup();
 #endif
 #ifdef USE_BUTTONS
@@ -152,7 +152,7 @@ void loop() {
 #ifdef USE_BUTTONS
   newButtonUpdate();
 #endif
-#ifdef OLED
+#if defined(SSD1306_OLED) || defined(SH1106_OLED)
   // We need to pause the OLED during update otherwise we crash due to I2C
   if(!isUpdating()) {
     OLED_CheckIfUpdateReq();

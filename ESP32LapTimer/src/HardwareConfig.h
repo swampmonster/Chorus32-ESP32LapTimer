@@ -1,5 +1,5 @@
 /*
- * This file is part of Chorus32-ESP32LapTimer 
+ * This file is part of Chorus32-ESP32LapTimer
  * (see https://github.com/AlessandroAU/Chorus32-ESP32LapTimer).
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,8 +33,9 @@
 #define BOARD BOARD_DEFAULT
 #endif
 
-/// If your setup doesn't use an OLED remove or comment the following line
-#define OLED
+/// The code supports the SSD1306 and SH1106 oled displays, uncomment one of these if your setup uses one.
+//#define SSD1306_OLED
+#define SH1106_OLED
 
 // Selects the wifi mode to operate in.
 // One of these must be uncommented.
